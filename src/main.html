@@ -20,7 +20,7 @@
 
     <div class="header">
         <div class="windowBar">
-            <div class="windowDragBar">FTP File Transfer 0.1</div>
+            <div class="windowDragBar">FTP File Transfer 0.6</div>
             <div class="windowButtons">
                 <div class="windowMinButton windowButton" onclick="minWindow()">-</div>
                 <div class="windowMaxResButton windowButton" onclick="maxWindow()">□</div>
@@ -101,13 +101,13 @@
                 </center>
                 <br>
 
-                <input type="text" placeholder="Cool Folder" value="Cool Folder">
+                <input class="folderName" type="text" placeholder="Cool Folder" value="Cool Folder">
                 <br>
-                <div class="createFolderButton" onclick="">
+                <div class="createFolderButton" onclick="createFolder()">
                     Create my folder
                 </div>
                 <br>
-                <div class="closeButton" onclick="">
+                <div class="closeButton" onclick="$('.newFolderPopOut').fadeOut();$('.folderName').val('Cool Folder');">
                     Close
                 </div>
             </div>

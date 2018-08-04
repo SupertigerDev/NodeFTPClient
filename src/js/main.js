@@ -143,12 +143,23 @@ function Notification(message, isError) {
 
 
 function appendFiles(list) {
+    $(".BackButton").css("color", "white")
     var toAppend = ""
     list.forEach(element => {
+        let extention = getExtension(element.name, element.type).toLowerCase()
         if (element.type == "d") {
             toAppend += '<div class="appendFile" id="folder-' + element.name + '"><div class="dir dirName"><div class="material-icons">folder</div><div style="display: inline-block;vertical-align: middle;">' + element.name + '</div></div><div class="dir dirType">' + getExtension(element.name, element.type) + '</div><div class="dir dirSize">' + bytesToSize(element.size, element.type) + '</div><div class="dir dirDate">' + element.date + '</div></div>'
         } else {
-            toAppend += '<div class="appendFile" id="file-' + element.name + '"><div class="dir dirName"><div class="material-icons">insert_drive_file</div><div style="display: inline-block;vertical-align: middle;">' + element.name + '</div></div><div class="dir dirType">' + getExtension(element.name, element.type) + '</div><div class="dir dirSize">' + bytesToSize(element.size, element.type) + '</div><div class="dir dirDate">' + element.date + '</div></div>'
+            if ( extention == "mp3"  || extention == "m4a" || extention == "flac" ){
+                toAppend += '<div class="appendFile" id="file-' + element.name + '"><div class="dir dirName"><div class="material-icons">music_note</div><div style="display: inline-block;vertical-align: middle;">' + element.name + '</div></div><div class="dir dirType">' + getExtension(element.name, element.type) + '</div><div class="dir dirSize">' + bytesToSize(element.size, element.type) + '</div><div class="dir dirDate">' + element.date + '</div></div>'
+            }else if(extention == "apk"){
+                toAppend += '<div class="appendFile" id="file-' + element.name + '"><div class="dir dirName"><div class="material-icons">android</div><div style="display: inline-block;vertical-align: middle;">' + element.name + '</div></div><div class="dir dirType">' + getExtension(element.name, element.type) + '</div><div class="dir dirSize">' + bytesToSize(element.size, element.type) + '</div><div class="dir dirDate">' + element.date + '</div></div>'
+            }else if ( extention == "png"  || extention == "jpg" || extention == "jpeg"|| extention == "gif") {
+                toAppend += '<div class="appendFile" id="file-' + element.name + '"><div class="dir dirName"><div class="material-icons">photo</div><div style="display: inline-block;vertical-align: middle;">' + element.name + '</div></div><div class="dir dirType">' + getExtension(element.name, element.type) + '</div><div class="dir dirSize">' + bytesToSize(element.size, element.type) + '</div><div class="dir dirDate">' + element.date + '</div></div>'
+            }else{
+                toAppend += '<div class="appendFile" id="file-' + element.name + '"><div class="dir dirName"><div class="material-icons">insert_drive_file</div><div style="display: inline-block;vertical-align: middle;">' + element.name + '</div></div><div class="dir dirType">' + getExtension(element.name, element.type) + '</div><div class="dir dirSize">' + bytesToSize(element.size, element.type) + '</div><div class="dir dirDate">' + element.date + '</div></div>'
+            }
+            
         }
     });
     $(".directory").html(toAppend)
@@ -320,7 +331,6 @@ function uploadFile(localLocation, serverLocation, id) {
 }
 
 function updateUploadList() {
-
     if (uploadQueue.length == 0) {
         $(".uploadCloseButton").fadeIn();
         c.list(currentPath, function (err, list) {
@@ -340,7 +350,7 @@ function updateUploadList() {
             uploadQueue.shift();
             makeDir(serverPath, path.basename(localPath), function (cb) {
                 $($("#upload-" + id).children()[0]).css("width", "100%");
-                $("#upload-" + id + " .uploadPercent").text("Progress: 100%");
+                $("#upload-" + id + " .uploadPercent").text("Created Folder");
                 addFolderItemToList(localPath + "/", serverPath, function (cb) {
                     uploadFile(uploadQueue[0].localPath, uploadQueue[0].serverPath, uploadQueue[0].id)
                 });
@@ -368,10 +378,12 @@ function consoleMessage(title, message, isError) {
 }
 
 function makeDir(path, name, cb) {
+    consoleMessage("New Folder", "Creating a folder called <b>"+name+"</b> at <b>"+path+"</b>")
     if (path != "/") {
         path = "/" + path;
     }
     c.mkdir(path + name + "/", function (err) {
+        consoleMessage("New Folder", "<b>"+name+"</b> created.")
         cb("done!");
     })
 }
@@ -411,9 +423,12 @@ $(".directory").dblclick(function (e) {
     }
     if (clicked != "") {
         currentPath += clicked.substring(7) + "/"
-        $(".directory").html("<center><font color='white'>Loading</font></center>")
+        consoleMessage("cd", "Opening <b>" + currentPath + "</b>", false)
+        $(".BackButton").css("color", "gray")
+        $(".directory").html("<center><font color='white'>Loading...</font></center>")
         c.list(currentPath, function (err, list) {
             if (err) throw err;
+            consoleMessage("cd", "Opened.", false)
             appendFiles(list)
             $(".pathTextArea").html(currentPath)
         });
@@ -421,6 +436,11 @@ $(".directory").dblclick(function (e) {
 })
 
 function backButton() {
+    if ($(".directory").text() == "Loading..."){
+        consoleMessage("Wait", "Something is currently loading.", true)
+        return;
+    }
+
     let split = currentPath.split("/").filter(Boolean)
     split.pop();
     console.log(split)
@@ -428,15 +448,18 @@ function backButton() {
         currentPath = "/"
 
     } else if (split.length == 0) {
-        consoleMessage("Void!", "You cant go any more back.", true);
+        consoleMessage("Void", "You cant go any more back.", true);
         return;
     } else {
         split = "/" + split.join("/") + "/"
         currentPath = split;
     }
-    $(".directory").html("<center><font color='white'>Loading</font></center>")
+    $(".BackButton").css("color", "gray")
+    $(".directory").html("<center><font color='white'>Loading...</font></center>")
+    consoleMessage("cd", "Going back to <b>" + currentPath + "</b>", false)
     c.list(currentPath, function (err, list) {
         if (err) throw err;
+        consoleMessage("cd", "Loaded.", false)
         appendFiles(list)
         $(".pathTextArea").html(currentPath)
     });
