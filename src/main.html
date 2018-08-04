@@ -1,0 +1,123 @@
+<html>
+
+<head>
+    <script>
+        delete window.module;
+        const {
+            ipcRenderer
+        } = require('electron');
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="js/titleBarControl.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="windowBar">
+            <div class="windowDragBar">FTP File Transfer 0.1</div>
+            <div class="windowButtons">
+                <div class="windowMinButton windowButton" onclick="minWindow()">-</div>
+                <div class="windowMaxResButton windowButton" onclick="maxWindow()">□</div>
+                <div class="windowCloseButton windowButton" onclick="closeWindow()">✕</div>
+            </div>
+        </div>
+
+    </div>
+    <div class="content">
+        <div class="connectionScreen">
+            <h3 style="color: rgb(56, 56, 56);">Enter ip Address</h3>
+            <h4 style="color: rgb(73, 73, 73);">Use the Wifi FTP Server app on your phone.</h4>
+            <div class="inputConnectionDetails">
+                <label for="inputIP">IP Address</label>
+                <input type="text" id="inputIP" value="192.168." placeholder="IP Address">
+                <label for="inputUsername">Username</label>
+                <input type="text" id="inputUsername" placeholder="Username">
+                <label for="inputPassword">Password</label>
+                <input type="password" id="inputPassword" placeholder="Password">
+                <label for="inputPort">Port</label>
+                <input type="text" id="inputPort" value="21">
+                <div class="connectButton" id="connectButton">Connect</div>
+            </div>
+        </div>
+        <div class="loggedIn">
+            <div class="directories">
+                <div class="filePathArea">
+                    <div class="BackButton" onclick="backButton();">
+                        <i class="material-icons">
+                            arrow_back
+                        </i>
+                    </div>
+                    <textarea class="pathTextArea">/</textarea>
+                </div>
+                <div class="directoryArea">
+                    <div class="tabs">
+                        <div class="tab tabName">Name</div>
+                        <div class="tab tabType">Type</div>
+                        <div class="tab tabSize">Size</div>
+                        <div class="tab tabDate">Date</div>
+                    </div>
+                    <div class="directory">
+
+                    </div>
+                </div>
+            </div>
+            <div class="console"></div>
+        </div>
+
+        <div class="dragDropGuide">
+            Drag Here to copy to current folder
+        </div>
+        <div class="uploadingPopOut">
+            <div class="uploadContainer">
+                <div class="uploadBanner">
+                    Upload Files
+                </div>
+                <div class="filesToUpload">
+
+                </div>
+                <div class="uploadCloseButton" onclick="$('.uploadingPopOut').fadeOut();$('.uploadCloseButton').fadeOut(); $('.fileToUpload').remove();">
+                    Close
+                </div>
+            </div>
+        </div>
+
+        <div class="newFolderPopOut">
+            <div class="newFolderContainer">
+                <div class="uploadBanner">
+                    New Folder
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <center>
+                    <font size="5px" color="white">Name your quality folder</font>
+                </center>
+                <br>
+
+                <input type="text" placeholder="Cool Folder" value="Cool Folder">
+                <br>
+                <div class="createFolderButton" onclick="">
+                    Create my folder
+                </div>
+                <br>
+                <div class="closeButton" onclick="">
+                    Close
+                </div>
+            </div>
+        </div>
+
+        <div id='cntnr'></div>
+
+        <div class="notification"></div>
+</body>
+<script src="js/main.js"></script>
+<script src="js/RightClickMenu.js"></script>
+
+</html>
