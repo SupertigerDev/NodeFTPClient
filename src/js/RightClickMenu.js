@@ -41,23 +41,33 @@ function startFocusOut() {
 $("#cntnr").click(function (e) {
     let optionClicked = $(e.target).text()
     if (optionClicked == "New Folder") {
+
         $(".newFolderPopOut").fadeIn();
+
     } else if (optionClicked == "Delete") {
+
         let location = currentPath;
         if (clickedFile.startsWith("file-")) {
             location = location + clickedFile.substring(5)
             deleteFile(location)
             consoleMessage("Delete", "Deleting <b>"+clickedFile.substring(5)+"</b>", false)
+
         } else if (clickedFile.startsWith("folder-")) {
 
             location = location + clickedFile.substring(7)
             deleteDir(location)
             consoleMessage("Delete", "Deleting <b>"+clickedFile.substring(7)+"</b>", false)
         }
+
         $("[id='"+clickedFile+"'] .dir").css("color", "red")
 
+    }else if (optionClicked == "Download"){
 
+        if (clickedFile.startsWith("file-")) {
 
+            saveAs(clickedFile.substring(5))
+            
+        }
     }
 });
 
